@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/api/*"
+  to = "http://hj-shopping-mall-env.eba-mcaiajm5.ap-southeast-2.elasticbeanstalk.com/api/:splat"
+  status = 200
+  force = true
