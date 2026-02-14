@@ -46,7 +46,7 @@ export const registerUser = createAsyncThunk(
       //1. 실패 토스트 메세지를 보여준다
       dispatch(showToastMessage({message: '회원가입에 실패했습니다', status: 'error'}));
       //2. 에러값을 저장한다
-      return rejectWithValue(error.error);
+      return rejectWithValue(error.response?.data.message);
     }
   }
 );
