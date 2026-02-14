@@ -8,7 +8,7 @@ export const loginWithEmail = createAsyncThunk(
   "user/loginWithEmail",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/login', { email, password })
+      const response = await api.post('api/auth/login', { email, password })
       //성공
       //loginpage
       //토큰 저장
