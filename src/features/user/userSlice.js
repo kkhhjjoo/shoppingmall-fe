@@ -11,11 +11,13 @@ export const loginWithEmail = createAsyncThunk(
       const response = await api.post('/auth/login', { email, password })
       //성공
       //loginpage
+      //토큰 저장
+      sessionStorage.setItem('token', response.data.token);
       return response.data;
-    } catch (error) { 
+    } catch (error) {
       //실패
       //실패시 생긴 에러값을 reducer에 저장
-      return rejectWithValue(error.error)
+      return rejectWithValue(error.response?.data.message)
     }
   }
 );
