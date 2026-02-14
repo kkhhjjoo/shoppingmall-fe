@@ -33,7 +33,7 @@ export const registerUser = createAsyncThunk(
     { dispatch, rejectWithValue }
   ) => {
     try {
-      const response = await api.post('/user', { email, name, password });
+      const response = await api.post('api/user', { email, name, password });
       //성공
       //1. 성공 토스트 메세지 보여주기
       dispatch(showToastMessage({message: '회원가입에 성공했습니다', status: 'success'}));
