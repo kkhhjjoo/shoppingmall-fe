@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/user/userSlice";
 
 const Navbar = ({ user }) => {
+  console.log('user', user);
   const dispatch = useDispatch();
   const { cartItemCount } = useSelector((state) => state.cart);
   const isMobile = window.navigator.userAgent.indexOf("Mobile") !== -1;
