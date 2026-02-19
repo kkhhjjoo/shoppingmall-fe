@@ -111,8 +111,15 @@ const userSlice = createSlice({
         state.loading = false;
         state.loginError = action.payload;
       })
+      .addCase(loginWithToken.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(loginWithToken.fulfilled, (state, action) => {
-        state.user = action.payload.user
+        state.loading = false;
+        state.user = action.payload.user;
+      })
+      .addCase(loginWithToken.rejected, (state) => {
+        state.loading = false;
       });
   },
 });

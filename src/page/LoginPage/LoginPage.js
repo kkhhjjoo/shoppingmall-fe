@@ -20,7 +20,14 @@ const Login = () => {
     if (loginError) {
       dispatch(clearErrors());
     }
-  }, [navigate]);
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user]);
+
   const handleLoginWithEmail = (event) => {
     event.preventDefault();
     dispatch(loginWithEmail({ email, password }));
@@ -29,10 +36,6 @@ const Login = () => {
   const handleGoogleLogin = async (googleData) => {
     //구글 로그인 하기
   };
-
-  if (user) {
-    navigate("/");
-  }
   return (
     <>
       <Container className="login-area">
