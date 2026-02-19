@@ -30,7 +30,7 @@ export const createProduct = createAsyncThunk(
       dispatch(showToastMessage({message: '상품 생성 완료', status: 'success'}))
       return response.data.data;
     } catch(error) {
-      return rejectWithValue(error.error);
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -76,7 +76,7 @@ const productSlice = createSlice({
       state.loading = false;
       state.error = '';
       state.productList = action.payload;
-      state.totalPageNum = action.payload.totalPageNum;
+      // state.totalPageNum = action.payload.totalPageNum;
     })
     .addCase(getProductList.rejected, (state, action) => {
       state.loading = false;
