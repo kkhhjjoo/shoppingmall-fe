@@ -11,9 +11,13 @@ export const getProductList = createAsyncThunk(
       const params = { ...query };
       if (params.name === "") delete params.name;
       const response = await api.get('/api/product', { params });
+      console.log('response', response);
       if (response.status !== 200) throw new Error(response.error);
       const data = response.data?.data ?? response.data;
-      return Array.isArray(data) ? data : [];
+      return {
+        data: Array.isArray(data) ? data : [],
+        totalPageNum: response.data?.totalPageNum ?? 1,
+      };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -79,8 +83,8 @@ const productSlice = createSlice({
     .addCase(getProductList.fulfilled, (state, action) => {
       state.loading = false;
       state.error = '';
-      state.productList = action.payload;
-      // state.totalPageNum = action.payload.totalPageNum;
+      state.productList = action.payload.data;
+      state.totalPageNum = action.payload.totalPageNum;
     })
     .addCase(getProductList.rejected, (state, action) => {
       state.loading = false;

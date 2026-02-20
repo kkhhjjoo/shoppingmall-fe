@@ -1,53 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { Container, Button } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import ReactPaginate from "react-paginate";
-import SearchBox from "../../common/component/SearchBox";
-import NewItemDialog from "./component/NewItemDialog";
-import ProductTable from "./component/ProductTable";
-import {
-  getProductList,
-  deleteProduct,
-  setSelectedProduct,
-  clearError,
-} from "../../features/product/productSlice";
+import React, { useEffect, useState } from 'react';
+import { Container, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
+import SearchBox from '../../common/component/SearchBox';
+import NewItemDialog from './component/NewItemDialog';
+import ProductTable from './component/ProductTable';
+import { getProductList, deleteProduct, setSelectedProduct, clearError } from '../../features/product/productSlice';
 
 const AdminProductPage = () => {
   const navigate = useNavigate();
   const [query] = useSearchParams();
   const dispatch = useDispatch();
-  const { productList, totalPageNum, success } = useSelector((state) => state.product);
+  const { productList, success } = useSelector((state) => state.product);
   const [showDialog, setShowDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState({
-    page: query.get("page") || 1,
-    name: query.get("name") || "",
+    page: query.get('page') || 1,
+    name: query.get('name') || '',
   }); //검색 조건들을 저장하는 객체
+
+  const totalPageNum = useSelector((state) => state.product.totalPageNum);
 
   // URL에 검색어가 있는 상태로 진입했을 때(직접 링크, 새로고침) searchQuery 동기화
   useEffect(() => {
-    const page = query.get("page") || 1;
-    const name = query.get("name") || "";
+    const page = query.get('page') || 1;
+    const name = query.get('name') || '';
     setSearchQuery((prev) => {
       const nextPage = Number(page) || 1;
-      const nextName = name || "";
+      const nextName = name || '';
       if (prev.page === nextPage && prev.name === nextName) return prev;
       return { page: nextPage, name: nextName };
     });
-  }, [query.get("page"), query.get("name")]);
+  }, [query.get('page'), query.get('name')]);
 
-  const [mode, setMode] = useState("new");
+  const [mode, setMode] = useState('new');
 
-  const tableHeader = [
-    "#",
-    "Sku",
-    "Name",
-    "Price",
-    "Stock",
-    "Image",
-    "Status",
-    "",
-  ];
+  const tableHeader = ['#', 'Sku', 'Name', 'Price', 'Stock', 'Image', 'Status', ''];
 
   //상품리스트 가져오기 (url쿼리 맞춰서)
   useEffect(() => {
@@ -63,14 +51,14 @@ const AdminProductPage = () => {
 
   useEffect(() => {
     //검색어나 페이지가 바뀌면 url바꿔주기 (단, 이미 URL과 같으면 덮어쓰지 않음 → 직접 링크/새로고침 시 검색어 유지)
-    const urlPage = query.get("page") || "1";
-    const urlName = query.get("name") || "";
+    const urlPage = query.get('page') || '1';
+    const urlName = query.get('name') || '';
     const samePage = String(searchQuery.page) === String(urlPage);
-    const sameName = String(searchQuery.name || "") === String(urlName);
+    const sameName = String(searchQuery.name || '') === String(urlName);
     if (samePage && sameName) return;
     const params = new URLSearchParams();
-    params.set("page", String(searchQuery.page));
-    if (searchQuery.name) params.set("name", searchQuery.name);
+    params.set('page', String(searchQuery.page));
+    if (searchQuery.name) params.set('name', searchQuery.name);
     navigate('?' + params.toString());
   }, [searchQuery]);
 
@@ -92,6 +80,8 @@ const AdminProductPage = () => {
 
   const handlePageClick = ({ selected }) => {
     //  쿼리에 페이지값 바꿔주기
+    console.log('selected', selected);
+    setSearchQuery({ ...searchQuery, page: selected + 1 });
   };
 
   //searchbox에서 검색어를 읽어온다 -> 엔터를 치면 -> searchQuery객체가 업데이트가 됨 {name: 스트레이트 팬츠}
@@ -101,28 +91,18 @@ const AdminProductPage = () => {
     <div className="locate-center">
       <Container>
         <div className="mt-2">
-          <SearchBox
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            placeholder="제품 이름으로 검색"
-            field="name"
-          />
+          <SearchBox searchQuery={searchQuery} setSearchQuery={setSearchQuery} placeholder="제품 이름으로 검색" field="name" />
         </div>
         <Button className="mt-2 mb-2" onClick={handleClickNewItem}>
           Add New Item +
         </Button>
 
-        <ProductTable
-          header={tableHeader}
-          data={productList}
-          deleteItem={deleteItem}
-          openEditForm={openEditForm}
-        />
+        <ProductTable header={tableHeader} data={productList} deleteItem={deleteItem} openEditForm={openEditForm} />
         <ReactPaginate
           nextLabel="next >"
           onPageChange={handlePageClick}
           pageRangeDisplayed={5}
-          pageCount={100}
+          pageCount={totalPageNum}
           forcePage={searchQuery.page - 1}
           previousLabel="< previous"
           renderOnZeroPageCount={null}
@@ -141,11 +121,7 @@ const AdminProductPage = () => {
         />
       </Container>
 
-      <NewItemDialog
-        mode={mode}
-        showDialog={showDialog}
-        setShowDialog={setShowDialog}
-      />
+      <NewItemDialog mode={mode} showDialog={showDialog} setShowDialog={setShowDialog} />
     </div>
   );
 };
