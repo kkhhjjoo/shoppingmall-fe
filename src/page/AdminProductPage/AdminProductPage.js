@@ -24,6 +24,18 @@ const AdminProductPage = () => {
     name: query.get("name") || "",
   }); //검색 조건들을 저장하는 객체
 
+  // URL에 검색어가 있는 상태로 진입했을 때(직접 링크, 새로고침) searchQuery 동기화
+  useEffect(() => {
+    const page = query.get("page") || 1;
+    const name = query.get("name") || "";
+    setSearchQuery((prev) => {
+      const nextPage = Number(page) || 1;
+      const nextName = name || "";
+      if (prev.page === nextPage && prev.name === nextName) return prev;
+      return { page: nextPage, name: nextName };
+    });
+  }, [query.get("page"), query.get("name")]);
+
   const [mode, setMode] = useState("new");
 
   const tableHeader = [
@@ -50,7 +62,16 @@ const AdminProductPage = () => {
   }, [success, dispatch, searchQuery]);
 
   useEffect(() => {
-    //검색어나 페이지가 바뀌면 url바꿔주기 (검색어또는 페이지가 바뀜 => url 바꿔줌=> url쿼리 읽어옴=> 이 쿼리값 맞춰서  상품리스트 가져오기)
+    //검색어나 페이지가 바뀌면 url바꿔주기 (단, 이미 URL과 같으면 덮어쓰지 않음 → 직접 링크/새로고침 시 검색어 유지)
+    const urlPage = query.get("page") || "1";
+    const urlName = query.get("name") || "";
+    const samePage = String(searchQuery.page) === String(urlPage);
+    const sameName = String(searchQuery.name || "") === String(urlName);
+    if (samePage && sameName) return;
+    const params = new URLSearchParams();
+    params.set("page", String(searchQuery.page));
+    if (searchQuery.name) params.set("name", searchQuery.name);
+    navigate('?' + params.toString());
   }, [searchQuery]);
 
   const deleteItem = (id) => {
@@ -73,6 +94,9 @@ const AdminProductPage = () => {
     //  쿼리에 페이지값 바꿔주기
   };
 
+  //searchbox에서 검색어를 읽어온다 -> 엔터를 치면 -> searchQuery객체가 업데이트가 됨 {name: 스트레이트 팬츠}
+  // -> searchQuery객체 안에 아이템 기준으로 url을 새로 생성해서 url을 새로 생성해서 호출 &name=스트레이트+팬츠
+  // -> url쿼리 읽어오기 -> url쿼리 기준으로 BE에 검색 조건과 함께 호출한다
   return (
     <div className="locate-center">
       <Container>

@@ -7,9 +7,13 @@ export const getProductList = createAsyncThunk(
   "products/getProductList",
   async (query, { rejectWithValue }) => {
     try {
-      const response = await api.get('/api/product');
+      // 빈 문자열은 제외해서 백엔드에 전달 (검색 조건만 명확히 전달)
+      const params = { ...query };
+      if (params.name === "") delete params.name;
+      const response = await api.get('/api/product', { params });
       if (response.status !== 200) throw new Error(response.error);
-      return response.data.data;
+      const data = response.data?.data ?? response.data;
+      return Array.isArray(data) ? data : [];
     } catch (error) {
       return rejectWithValue(error.message);
     }
