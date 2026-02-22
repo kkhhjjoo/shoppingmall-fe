@@ -59,7 +59,13 @@ const LandingPage = () => {
             </Col>
           ))
         ) : (
-          <div className="text-align-center empty-bag">{name === '' ? <h2>등록된 상품이 없습니다!</h2> : <h2>{name}과 일치한 상품이 없습니다!`</h2>}</div>
+          <div className="text-align-center empty-bag">
+            {!name ? (
+              <h2>등록된 상품이 없습니다!</h2>
+            ) : (
+              <h2>{name}과 일치한 상품이 없습니다!</h2>
+            )}
+          </div>
         )}
       </Row>
       <ReactPaginate

@@ -42,6 +42,7 @@ export const deleteProduct = createAsyncThunk('products/deleteProduct', async (i
     dispatch(showToastMessage({ message: '상품 삭제 완료', status: 'success' }));
     dispatch(getProductList({ page: 1 }));
   } catch (error) {
+    dispatch(showToastMessage({ message: error.error || '상품 삭제 실패', status: 'error' }));
     return rejectWithValue(error.error || error.message || '상품 삭제 실패');
   }
 });
