@@ -21,7 +21,16 @@ export const getProductList = createAsyncThunk('products/getProductList', async 
   }
 });
 
-export const getProductDetail = createAsyncThunk('products/getProductDetail', async (id, { rejectWithValue }) => {});
+export const getProductDetail = createAsyncThunk('products/getProductDetail', async (id, { dispatch, rejectWithValue }) => {
+  try {
+    const response = await api.get(`/api/product/${id}`);
+    if (response.status !== 200) throw new Error(response.error);
+    return response.data.data;
+  } catch (error) {
+    dispatch(showToastMessage({ message: error.message, status: 'error' }));
+    return rejectWithValue(error.message);
+  }
+});
 
 export const createProduct = createAsyncThunk('products/createProduct', async (formData, { dispatch, rejectWithValue }) => {
   try {
@@ -93,6 +102,18 @@ const productSlice = createSlice({
         state.totalPageNum = action.payload.totalPageNum;
       })
       .addCase(getProductList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getProductDetail.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getProductDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = '';
+        state.selectedProduct = action.payload;
+      })
+      .addCase(getProductDetail.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
