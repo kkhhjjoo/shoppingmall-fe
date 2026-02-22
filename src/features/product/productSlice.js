@@ -35,7 +35,16 @@ export const createProduct = createAsyncThunk('products/createProduct', async (f
   }
 });
 
-export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id, { dispatch, rejectWithValue }) => {});
+export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id, { dispatch, rejectWithValue }) => {
+  try {
+    const response = await api.delete(`/api/product/${id}`);
+    if (response.status !== 200) throw new Error(response.error);
+    dispatch(showToastMessage({ message: '상품 삭제 완료', status: 'success' }));
+    dispatch(getProductList({ page: 1 }));
+  } catch (error) {
+    return rejectWithValue(error.error || error.message || '상품 삭제 실패');
+  }
+});
 
 export const editProduct = createAsyncThunk('products/editProduct', async ({ id, ...formData }, { dispatch, rejectWithValue }) => {
   try {
@@ -99,6 +108,17 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.success = false;
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteProduct.fulfilled, (state) => {
+        state.loading = false;
+        state.error = '';
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
       .addCase(editProduct.pending, (state) => {
         state.loading = true;
