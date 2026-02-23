@@ -25,7 +25,7 @@ const ProductTable = ({ header, data, deleteItem, openEditForm }) => {
                 <th>
                   {Object.keys(item.stock).map((size, index) => (
                     <div key={index}>
-                      {size}:{item.stock[size]}
+                      {size}:{Math.max(0, item.stock[size])}
                     </div>
                   ))}
                 </th>

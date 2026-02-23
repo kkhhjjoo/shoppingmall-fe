@@ -99,7 +99,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
   const handleStockChange = (value, index) => {
     //재고 수량 변환하기
     const newStock = [...stock];
-    newStock[index][1] = value;
+    newStock[index][1] = Math.max(0, parseInt(value) || 0);
     setStock(newStock);
   };
 
@@ -173,7 +173,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
                   </Form.Select>
                 </Col>
                 <Col sm={6}>
-                  <Form.Control onChange={(event) => handleStockChange(event.target.value, index)} type="number" placeholder="number of stock" value={item[1]} required />
+                  <Form.Control onChange={(event) => handleStockChange(event.target.value, index)} type="number" placeholder="number of stock" value={item[1]} min="0" required />
                 </Col>
                 <Col sm={2}>
                   <Button variant="danger" size="sm" onClick={() => deleteStock(index)}>
