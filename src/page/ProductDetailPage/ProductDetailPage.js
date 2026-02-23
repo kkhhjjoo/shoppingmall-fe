@@ -11,19 +11,29 @@ import { addToCart } from '../../features/cart/cartSlice';
 const ProductDetail = () => {
   const dispatch = useDispatch();
   const { selectedProduct, loading } = useSelector((state) => state.product);
+  const { user } = useSelector((state) => state.user);
   const [size, setSize] = useState('');
   const { id } = useParams();
   const [sizeError, setSizeError] = useState(false);
-  const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
 
   const addItemToCart = () => {
     //사이즈를 아직 선택안했다면 에러
+    if (size === '') {
+      setSizeError(true);
+      return;
+    }
     // 아직 로그인을 안한유저라면 로그인페이지로
+    if (!user) navigate('/login');
     // 카트에 아이템 추가하기
+    dispatch(addToCart({ id, size }));
   };
   const selectSize = (value) => {
     // 사이즈 추가하기
+    console.log('value', value);
+
+    if (sizeError) setSizeError(false);
+    setSize(value);
   };
 
   useEffect(() => {
@@ -43,14 +53,9 @@ const ProductDetail = () => {
           <div className="product-info">{selectedProduct.description}</div>
 
           <Dropdown className="drop-down size-drop-down" title={size} align="start" onSelect={(value) => selectSize(value)}>
-            {/* <Dropdown.Toggle
-              className="size-drop-down"
-              variant={sizeError ? "outline-danger" : "outline-dark"}
-              id="dropdown-basic"
-              align="start"
-            >
-              {size === "" ? "사이즈 선택" : size.toUpperCase()}
-            </Dropdown.Toggle> */}
+            <Dropdown.Toggle className="size-drop-down" variant={sizeError ? 'outline-danger' : 'outline-dark'} id="dropdown-basic" align="start">
+              {size === '' ? '사이즈 선택' : size.toUpperCase()}
+            </Dropdown.Toggle>
 
             <Dropdown.Menu className="size-drop-down">
               {Object.keys(selectedProduct.stock).length > 0 &&
@@ -67,7 +72,7 @@ const ProductDetail = () => {
                 )}
             </Dropdown.Menu>
           </Dropdown>
-          {/* <div className="warning-message">{sizeError && '사이즈를 선택해주세요.'}</div> */}
+          <div className="warning-message">{sizeError && '사이즈를 선택해주세요.'}</div>
           <Button variant="dark" className="add-button" onClick={addItemToCart}>
             추가
           </Button>
