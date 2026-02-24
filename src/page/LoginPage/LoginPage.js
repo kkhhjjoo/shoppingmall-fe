@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Container, Form, Button, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,11 +15,17 @@ const Login = () => {
   const { user, loginError } = useSelector((state) => state.user);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const loginPromiseRef = useRef(null);
 
   useEffect(() => {
     if (loginError) {
       dispatch(clearErrors());
     }
+    return () => {
+      if (loginPromiseRef.current) {
+        loginPromiseRef.current.abort();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -30,7 +36,7 @@ const Login = () => {
 
   const handleLoginWithEmail = (event) => {
     event.preventDefault();
-    dispatch(loginWithEmail({ email, password }));
+    loginPromiseRef.current = dispatch(loginWithEmail({ email, password }));
   };
 
   const handleGoogleLogin = async (googleData) => {
