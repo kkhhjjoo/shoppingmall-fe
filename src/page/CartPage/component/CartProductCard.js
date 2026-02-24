@@ -1,10 +1,10 @@
-import React from "react";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Row, Col, Form } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useDispatch } from "react-redux";
-import { currencyFormat } from "../../../utils/number";
-import { updateQty, deleteCartItem } from "../../../features/cart/cartSlice";
+import React, { useEffect } from 'react';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Row, Col, Form } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useDispatch } from 'react-redux';
+import { currencyFormat } from '../../../utils/number';
+import { updateQty, deleteCartItem, getCartList } from '../../../features/cart/cartSlice';
 const CartProductCard = ({ item }) => {
   const dispatch = useDispatch();
 
@@ -26,11 +26,7 @@ const CartProductCard = ({ item }) => {
           <div className="display-flex space-between">
             <h3>{item.productId.name}</h3>
             <button className="trash-button">
-              <FontAwesomeIcon
-                icon={faTrash}
-                width={24}
-                onClick={() => deleteCart(item._id)}
-              />
+              <FontAwesomeIcon icon={faTrash} width={24} onClick={() => deleteCart(item._id)} />
             </button>
           </div>
 
@@ -41,14 +37,7 @@ const CartProductCard = ({ item }) => {
           <div>Total: ₩ {currencyFormat(item.productId.price * item.qty)}</div>
           <div>
             Quantity:
-            <Form.Select
-              onChange={(event) =>
-                handleQtyChange(item._id, event.target.value)
-              }
-              required
-              defaultValue={item.qty}
-              className="qty-dropdown"
-            >
+            <Form.Select onChange={(event) => handleQtyChange(item._id, event.target.value)} required defaultValue={item.qty} className="qty-dropdown">
               <option value={1}>1</option>
               <option value={2}>2</option>
               <option value={3}>3</option>
