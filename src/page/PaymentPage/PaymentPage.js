@@ -31,14 +31,15 @@ const PaymentPage = () => {
   console.log('shipinfo', shipInfo);
   const { cartList, totalPrice } = useSelector((state) => state.cart);
 
-  useEffect(() => {
-    dispatch(getCartList()).then((result) => {
-      const data = result.payload?.data;
-      if (!data || data.length === 0) {
-        navigate('/cart');
-      }
-    });
-  }, [dispatch, navigate]);
+  // useEffect(() => {
+  //   console.log('111');
+  //   dispatch(getCartList()).then((result) => {
+  //     const data = result.payload?.data;
+  //     if (!data || data.length === 0) {
+  //       navigate('/cart');
+  //     }
+  //   });
+  // }, [dispatch, navigate]);
 
   useEffect(() => {
     if (orderNum) {
@@ -46,21 +47,29 @@ const PaymentPage = () => {
     }
   }, [orderNum, navigate]);
 
+  useEffect(() => {
+    if (cartList?.length === 0) {
+      navigate('/cart');
+    }
+  }, [cartList, navigate]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     // 오더 생성하기
-    const { firstName, lastName, contact, address, city, zip} = shipInfo
-    dispatch(createOrder({
-      totalPrice,
-      shipTo: { address, city, zip },
-      contact: { firstName, lastName, contact },
-      orderList: cartList.map((item) => ({
-        productId: item.productId._id,
-        price: item.productId.price,
-        qty: item.qty,
-        size: item.size
-      }))
-    }));
+    const { firstName, lastName, contact, address, city, zip } = shipInfo;
+    dispatch(
+      createOrder({
+        totalPrice,
+        shipTo: { address, city, zip },
+        contact: { firstName, lastName, contact },
+        orderList: cartList.map((item) => ({
+          productId: item.productId._id,
+          price: item.productId.price,
+          qty: item.qty,
+          size: item.size,
+        })),
+      })
+    );
   };
 
   const handleFormChange = (event) => {

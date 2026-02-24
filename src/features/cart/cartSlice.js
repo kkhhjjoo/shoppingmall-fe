@@ -62,6 +62,8 @@ const cartSlice = createSlice({
   reducers: {
     initialCart: (state) => {
       state.cartItemCount = 0;
+      state.cartList = [];
+      state.totalPrice = 0;
     },
     // You can still add reducers here for non-async actions if necessary
   },
