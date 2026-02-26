@@ -7,7 +7,7 @@ import PaymentForm from './component/PaymentForm';
 import './style/paymentPage.style.css';
 import { cc_expires_format } from '../../utils/number';
 import { createOrder } from '../../features/order/orderSlice';
-import { getCartList } from '../../features/cart/cartSlice';
+import { getCartList, initialCart } from '../../features/cart/cartSlice';
 
 const PaymentPage = () => {
   const dispatch = useDispatch();
@@ -43,15 +43,16 @@ const PaymentPage = () => {
 
   useEffect(() => {
     if (orderNum) {
+      dispatch(initialCart());
       navigate('/payment/success');
     }
-  }, [orderNum, navigate]);
+  }, [orderNum, navigate, dispatch]);
 
   useEffect(() => {
-    if (cartList?.length === 0) {
+    if (cartList?.length === 0 && !orderNum) {
       navigate('/cart');
     }
-  }, [cartList, navigate]);
+  }, [cartList, navigate, orderNum]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
