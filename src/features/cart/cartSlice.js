@@ -54,7 +54,17 @@ export const updateQty = createAsyncThunk('cart/updateQty', async ({ id, value }
   }
 });
 
-export const getCartQty = createAsyncThunk('cart/getCartQty', async (_, { rejectWithValue, dispatch }) => {});
+export const getCartQty = createAsyncThunk('cart/getCartQty', async (_, { rejectWithValue, dispatch }) => {
+  try {
+    const response = await api.get('/api/cart/qty');
+    if (response.status !== 200) throw new Error(response.error);
+    return response.data.qty;
+  } catch (error) {
+    dispatch(showToastMessage({ message: error, status: 'error' }));
+
+    return rejectWithValue(error);
+  }
+});
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -89,10 +99,7 @@ const cartSlice = createSlice({
         state.error = '';
         state.cartList = action.payload.data;
         state.cartItemCount = action.payload.data.length;
-        state.totalPrice = action.payload.data.reduce(
-          (total, item) => total + item.productId.price * item.qty,
-          0
-        );
+        state.totalPrice = action.payload.data.reduce((total, item) => total + item.productId.price * item.qty, 0);
       })
       .addCase(getCartList.rejected, (state, action) => {
         state.loading = false;
@@ -100,18 +107,12 @@ const cartSlice = createSlice({
       })
       .addCase(updateQty.fulfilled, (state, action) => {
         state.cartList = action.payload.data;
-        state.totalPrice = action.payload.data.reduce(
-          (total, item) => total + item.productId.price * item.qty,
-          0
-        );
+        state.totalPrice = action.payload.data.reduce((total, item) => total + item.productId.price * item.qty, 0);
       })
       .addCase(deleteCartItem.fulfilled, (state, action) => {
         state.cartList = action.payload.data;
         state.cartItemCount = action.payload.data.length;
-        state.totalPrice = action.payload.data.reduce(
-          (total, item) => total + item.productId.price * item.qty,
-          0
-        );
+        state.totalPrice = action.payload.data.reduce((total, item) => total + item.productId.price * item.qty, 0);
       });
   },
 });
