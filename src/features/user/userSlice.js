@@ -2,15 +2,16 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { showToastMessage } from '../common/uiSlice';
 import api from '../../utils/api';
-import { initialCart } from '../cart/cartSlice';
+import { initialCart, getCartList } from '../cart/cartSlice';
 
-export const loginWithEmail = createAsyncThunk('user/loginWithEmail', async ({ email, password }, { rejectWithValue }) => {
+export const loginWithEmail = createAsyncThunk('user/loginWithEmail', async ({ email, password }, { rejectWithValue, dispatch }) => {
   try {
     const response = await api.post('/api/auth/login', { email, password });
     //성공
     //loginpage
     //토큰 저장
     sessionStorage.setItem('token', response.data.token);
+    dispatch(getCartList());
     return response.data;
   } catch (error) {
     //실패
