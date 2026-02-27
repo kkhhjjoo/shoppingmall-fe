@@ -7,12 +7,14 @@ import "./common/style/common.style.css";
 import AppLayout from "./Layout/AppLayout";
 import AppRouter from "./routes/AppRouter";
 import { loginWithToken } from "./features/user/userSlice";
+import { getCartList } from "./features/cart/cartSlice";
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(loginWithToken());
+    dispatch(getCartList());
   }, [dispatch]);
 
   return (
