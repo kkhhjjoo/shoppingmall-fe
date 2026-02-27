@@ -20,6 +20,7 @@ const PaymentPage = () => {
     number: '',
   });
   const navigate = useNavigate();
+  const [firstLoading, setFirstLoading] = useState(true);
   const [shipInfo, setShipInfo] = useState({
     firstName: '',
     lastName: '',
@@ -42,9 +43,15 @@ const PaymentPage = () => {
   // }, [dispatch, navigate]);
 
   useEffect(() => {
-    if (orderNum) {
-      dispatch(initialCart());
-      navigate('/payment/success');
+    //오더 번호를 받으면 어디로 갈까?
+    if (firstLoading) {
+      //useEffect가 처음에 호출될때 오더 성공페이지로 넘어가는걸 막기 위해
+      setFirstLoading(false);
+    } else {
+      if (orderNum !== '') {
+        dispatch(initialCart());
+        navigate('/payment/success');
+      }
     }
   }, [orderNum, navigate, dispatch]);
 
