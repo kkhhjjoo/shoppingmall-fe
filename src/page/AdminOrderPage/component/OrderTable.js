@@ -20,8 +20,8 @@ const OrderTable = ({ header, data, openEditForm }) => {
               <tr onClick={() => openEditForm(item)}>
                 <th>{index}</th>
                 <th>{item.orderNum}</th>
-                <th>{item.createdAt.slice(0, 10)}</th>
-                <th>{item.userId.email}</th>
+                <th>{item.createdAt?.slice(0, 10)}</th>
+                <th>{item.userId?.email}</th>
                 {item.items.length > 0 ? (
                   <th>
                     {item.items[0].productId.name}

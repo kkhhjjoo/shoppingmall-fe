@@ -1,18 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import ReactPaginate from "react-paginate";
 import OrderStatusCard from "./component/OrderStatusCard";
 import "./style/orderStatus.style.css";
 import { getOrder } from "../../features/order/orderSlice";
 
 const MyPage = () => {
   const dispatch = useDispatch();
-  const { orderList } = useSelector((state) => state.order);
-  console.log(orderList);
+  const { orderList, totalPageNum } = useSelector((state) => state.order);
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
-    dispatch(getOrder());
-  }, [dispatch]);
+    dispatch(getOrder(currentPage));
+  }, [dispatch, currentPage]);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected + 1);
+  };
 
   if (orderList?.length === 0) {
     return (
@@ -30,6 +36,27 @@ const MyPage = () => {
           key={item._id}
         />
       ))}
+      <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={totalPageNum}
+        forcePage={currentPage - 1}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+        className="display-center list-style-none"
+      />
     </Container>
   );
 };
