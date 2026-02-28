@@ -20,7 +20,15 @@ export const loginWithEmail = createAsyncThunk('user/loginWithEmail', async ({ e
   }
 });
 
-export const loginWithGoogle = createAsyncThunk('user/loginWithGoogle', async (token, { rejectWithValue }) => {});
+export const loginWithGoogle = createAsyncThunk('user/loginWithGoogle', async (token, { rejectWithValue }) => {
+  try {
+    const response = await api.post('/auth/google', { token });
+    if (response.status !== 200) throw new Error(response.error);
+    return response.data.user;
+  } catch (error) {
+    return rejectWithValue(error.error);
+  }
+});
 
 export const logout = () => (dispatch) => {
   sessionStorage.removeItem('token');
@@ -109,6 +117,18 @@ const userSlice = createSlice({
       })
       .addCase(loginWithToken.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(loginWithGoogle.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.loginError = null;
+      })
+      .addCase(loginWithGoogle.rejected, (state, action) => {
+        state.loading = false;
+        state.loginError = action.payload;
       });
   },
 });
