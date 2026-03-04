@@ -1,9 +1,5 @@
 # 쇼핑몰 프로젝트 
-
-<img width="1502" alt="KakaoTalk_Photo_2023-08-09-10-42-10" src="https://github.com/legobitna/noona-shoppingmall-fe/assets/21190318/a2091646-7aee-46a4-9ebb-10d413c7da03">
-
-<img width="1498" alt="Screenshot 2023-08-09 at 10 59 52" src="https://github.com/legobitna/noona-shoppingmall-fe/assets/21190318/534ec667-da75-4939-a124-49c9315ef13d">
-
+배포: https://hj-shopping-mall.netlify.app/
 * 데모🖥
 ## 프로젝트의 목표
 한 달🗓 이라는 기간 안에 프론트엔드에서 백엔드까지 풀스택으로 개발할 수 있는 쇼핑몰 웹사이트! 
